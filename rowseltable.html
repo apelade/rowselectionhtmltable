@@ -3,9 +3,71 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title></title>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
         <script type="text/javascript">
-            function updateMap(locId){
+            
+
+            /* Called from submit button onsubmit action to hidden field val */
+            function setResult(){
+                var check = getCheckedValue();
+                if(check == "145" && ! validateAddress()){
+                    return false;
+                }
+                if(check == 'unchecked'){
+                    alert("A Pickup or Delivery location must be chosen.");
+                    return false;
+                }else{
+                    document.getElementById("result").value = check;
+                    return true;
+                }
+            }
+            
+            /* Called by setResult() to get the selected locationId. */
+            function getCheckedValue(){
+                var radios = document.getElementsByName("locationId");
+                for(var c=0;c<radios.length;c++){
+                    if(radios[c].checked){
+                        return radios[c].value;
+                    }
+                }
+                return 'unchecked';
+            }
+            
+            /* Simulate validation with check for all text field values. */
+            function validateAddress(){
+                var accumStr = '';
+                var elements = document.forms[0].elements;
+                for(var e=0;e<elements.length;e++){
+                    if(elements[e].type == "text"){
+                        accumStr += elements[e].value;
+                    }
+                }
+                if(accumStr == '' ){
+                    alert("Delivery Address Validator: \nAt least one of the fields needs some text.");
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+
+            
+            /* Called by input tr onclick actions to select rows */
+            var lastRadio = 'uninit';
+            var lastId = 'uninit';
+            function select(radioNum, trId){
+                if(radioNum !== null && radioNum !== lastRadio){
+                    if(lastId !== 'uninit'){
+                        document.getElementById(lastId).setAttribute("class", "plain");
+                    }
+                    document.getElementById(trId).setAttribute("class", "selected");
+                    document.getElementById(radioNum).checked = true;
+                    updateDiv(radioNum);
+                    lastId = trId;
+                    lastRadio = radioNum;
+                }
+            }
+            
+            /* Called by select to switch out the map and other display area*/
+            function updateDiv(locId){
                 userDiv.setAttribute("class","hidden");
                 mapDiv.setAttribute("class", "shown");
                 // @ todo: use the js v3 geocoding pan to recenter on diff coords, not reload a different map
@@ -18,79 +80,75 @@
                 {
                     case 2:
                         mapDiv.innerHTML = iframe2;
+                        showMapDiv();
                         break;
                     case 35:
                         mapDiv.innerHTML = iframe35;
+                        showMapDiv();
                         break;
                     case 1:
                         mapDiv.innerHTML = iframe1;
+                        showMapDiv();
                         break;
                     case 37:
                         mapDiv.innerHTML = iframe37;
+                        showMapDiv();
                         break;
                     case 38:
                         mapDiv.innerHTML = iframe38;
+                        showMapDiv();
                         break;
-                    default:
+                    default:// ignore unknown ids like the "Delivery" buttons
+                        hideAll();
                         break;
                 }
             }
 
-            function userLocate(){
-                if(userDiv.getAttribute("class") == "hidden"){
-                    mapDiv.setAttribute("class", "hidden");
-                    userDiv.setAttribute("class", "shown");
-                    document.getElementById("addressOne").focus();
-                }
+            /* Switch to the mapDiv, hide the userDiv */
+            function showMapDiv(){
+                userDiv.setAttribute("class","hidden");
+                mapDiv.setAttribute("class", "shown");
             }
-            
+            /* Switch to the userDiv, hide the mapDiv */
+            function showUserDiv(){
+                userDiv.setAttribute("class","shown");
+                mapDiv.setAttribute("class", "hidden");
+            }
+            /* Hide the userDiv and mapDiv */
             function hideAll(){
                 mapDiv.setAttribute("class", "hidden");
                 userDiv.setAttribute("class", "hidden");
             }
             
-            var lastRadio = 'uninit';
-            var lastId = 'uninit';
-            function select(radioNum, trId){
-                if(radioNum !== null && radioNum !== lastRadio){
-                    document.getElementById(radioNum).checked = true;
-                    if(lastId !== 'uninit'){
-                        document.getElementById(lastId).setAttribute("class", "plain");
-                    }
-                    document.getElementById(trId).setAttribute("class", "selected");
-                    if(isPickup(radioNum)){
-                        updateMap(radioNum);
-                    }
-                    lastId = trId;
-                    lastRadio = radioNum;
-                }
-            }
-            
-            // cheesily using html element id attribute value > 100 for delivery
-            function isPickup(itemId){
-                if(itemId < 100){
-                    return true;
-                }
-                else return false;
-            }
-
         </script>
         <style type="text/css">
-            tr.plain:hover td {background:#CCCCFF;}
+
+
+            /* The selected and plain classes are switched out in select() */
             tr.selected {background:#9999FF;}
-            tr.plain {font-weight:normal;background:#FFFFFF;}
+            tr.plain {background:#FFFFFF;}
+
+            /* This is the entire highlight code. It specifies plain class
+               so that the hightlighting does not obscure the selected color */
+            tr.plain:hover td {background:#CCCCFF;}
+
+            /* These are used to show/hide the divs in updateDivs() */
+            div.shown{display:block;}
+            div.hidden{display:none;}
+
+            /* The rest are static style assignments */
             table, td, th
             {
                 border-collapse:collapse;
                 border:3px solid black;
                 font-size:12px;
                 font-family: Tahoma, sans-serif;
+                padding:5px;
             }
             th
             {
                 color:white;
                 font-size:14px;
-
                 background:#BBBBBB;
             }
             th.major
@@ -98,19 +156,12 @@
                 font-size:24px;
                 font-weight:bold;
                 background:gray;
-
-            }
-            td, th
-            {
-                padding:5px;
             }
 
-            div.shown{display:block;}
-            div.hidden{display:none;}
         </style>
     </head>
     <body>
-        <form id="DeliverForm">
+        <form id="DeliverForm" action="nextPage.php" onsubmit="return setResult();" method="post">
             <br /><br />
             <table>
                 <tr><th class="major" colspan="6">Pick Up - <small><small>click for map</small></small></th></tr>
@@ -121,8 +172,8 @@
                 <tr id="tr3" class="plain" onclick="select(37,'tr3');"><td><input id=37 type="radio" name="locationId" value=37 /></td><td>3599 Lake Tahoe Boulevard</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 541-7071</td><td>38.948049,-119.95897</td></tr>
                 <tr id="tr4" class="plain" onclick="select(38,'tr4');"><td><input id=38 type="radio" name="locationId" value=38 /></td><td>209 Kingsbury Grade Road</td><td>Stateline, NV</td><td>89449</td><td>(775) 588-0442</td><td>38.968269,-119.93413</td></tr>
                 <tr><th class="major" colspan="6">Delivery</th></tr>
-                <tr id="tr5" class="plain" onclick="hideAll(),select(144, 'tr5');"><td><input id=144 type="radio" name="locationId" value=144 /></td><td colspan="5" >Set <b>CORRECT</b> delivery address when checking out with PayPal.</td></tr>
-                <tr id="tr6" class="plain" onclick="userLocate(),select(145,'tr6');"><td><input id=145 type="radio" name="locationId" value=145 /></td>
+                <tr id="tr5" class="plain" onclick="select(144, 'tr5');"><td><input id=144 type="radio" name="locationId" value=144 /></td><td colspan="5" >Set <b>CORRECT</b> delivery address when checking out with PayPal.</td></tr>
+                <tr id="tr6" class="plain" onclick="select(145,'tr6'),showUserDiv();"><td><input id=145 type="radio" name="locationId" value=145 /></td>
                     <td colspan="5" > Click here to enter a delivery address.
                         <div id="userDiv" class="shown">
                             <table>
@@ -137,6 +188,8 @@
                     </td>
                 </tr>
             </table>
+            <input type="hidden" id="result" value="This value will be set by setResult()" />
+            <input type="submit" value="submit" />
             <br />
             <div id="mapDiv" class="hidden">
             </div>
