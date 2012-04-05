@@ -9,9 +9,11 @@
              * the result. */
             function showResult(){
                 alert("This is the locationId submitted which would " +
-                    "ordinarily be printed out \nby a followup page but I am not sure how to do " +
-                    " that with google gadgets so here is the result:\n\n" +
+                    "ordinarily be printed out by a followup page but "+
+                    "I am not sure how to do " +
+                    "that with google gadgets:\n\n" +
                     "RESULT locationId == " + getCheckedValue());
+                return true;
             }
 
             /* Called from submit button onsubmit action to hidden field val */
@@ -175,8 +177,10 @@
 
         </style>
     </head>
-    <body>
-        <form id="DeliverForm" action="showResult();" onsubmit="return setResult();" method="get">
+    <body> 
+<!--        Note action has been removed from the form, instead it is sent to showResult(). Uncomment this line an comment out the one below to change that. -->
+<!--        <form id="DeliverForm" action="nextPage.php" onsubmit="return setResult();" method="get">-->
+        <form id="DeliverForm" onsubmit="return setResult() && showResult();">
             <br /><br />
             <table>
                 <tr><th class="major" colspan="6">Pick Up - <small><small>click for map</small></small></th></tr>
