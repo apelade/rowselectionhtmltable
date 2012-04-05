@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+        <script type="text/javascript">
+            function updateMap(locId){
+                userDiv.setAttribute("class","hidden");
+                mapDiv.setAttribute("class", "shown");
+                // @ todo: use the js v3 geocoding pan to recenter on diff coords, not reload a different map
+                var iframe2  = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;iwloc=0004bcdf4e039324ecd08&amp;ll=38.938138,-119.969258&amp;spn=0.060262,0.070255&amp;output=embed"></iframe><br />';
+                var iframe35 = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;ll=38.934977,-119.998684&amp;spn=0.046735,0.072956&amp;z=13&amp;iwloc=0004bcdf4532eaad9d328&amp;output=embed"></iframe><br />';
+                var iframe1  = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;ll=38.959275,-119.970875&amp;spn=0.064072,0.109863&amp;z=13&amp;iwloc=0004bcdf433d59c4e32fb&amp;output=embed"></iframe><br />';
+                var iframe37 = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;ll=38.972622,-119.956112&amp;spn=0.04671,0.072956&amp;z=13&amp;iwloc=0004bcdf4134c412fb499&amp;output=embed"></iframe><br />';
+                var iframe38 = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;ll=38.993839,-119.931221&amp;spn=0.046696,0.072956&amp;z=13&amp;iwloc=0004bcdf3d19184b05a89&amp;output=embed"></iframe><br />';
+                switch(locId)
+                {
+                    case 2:
+                        mapDiv.innerHTML = iframe2;
+                        break;
+                    case 35:
+                        mapDiv.innerHTML = iframe35;
+                        break;
+                    case 1:
+                        mapDiv.innerHTML = iframe1;
+                        break;
+                    case 37:
+                        mapDiv.innerHTML = iframe37;
+                        break;
+                    case 38:
+                        mapDiv.innerHTML = iframe38;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            function userLocate(){
+                if(userDiv.getAttribute("class") == "hidden"){
+                    mapDiv.setAttribute("class", "hidden");
+                    userDiv.setAttribute("class", "shown");
+                    document.getElementById("addressOne").focus();
+                }
+            }
+            
+            function hideAll(){
+                mapDiv.setAttribute("class", "hidden");
+                userDiv.setAttribute("class", "hidden");
+            }
+            
+            var lastRadio = 'uninit';
+            var lastId = 'uninit';
+            function select(radioNum, trId){
+                if(radioNum !== null && radioNum !== lastRadio){
+                    document.getElementById(radioNum).checked = true;
+                    if(lastId !== 'uninit'){
+                        document.getElementById(lastId).setAttribute("class", "plain");
+                    }
+                    document.getElementById(trId).setAttribute("class", "selected");
+                    if(isPickup(radioNum)){
+                        updateMap(radioNum);
+                    }
+                    lastId = trId;
+                    lastRadio = radioNum;
+                }
+            }
+            
+            // cheesily using html element id attribute value > 100 for delivery
+            function isPickup(itemId){
+                if(itemId < 100){
+                    return true;
+                }
+                else return false;
+            }
+
+        </script>
+        <style type="text/css">
+            tr.plain:hover td {background:#CCCCFF;}
+            tr.selected {background:#9999FF;}
+            tr.plain {font-weight:normal;background:#FFFFFF;}
+            table, td, th
+            {
+                border-collapse:collapse;
+                border:3px solid black;
+                font-size:12px;
+                font-family: Tahoma, sans-serif;
+            }
+            th
+            {
+                color:white;
+                font-size:14px;
+
+                background:#BBBBBB;
+            }
+            th.major
+            {
+                font-size:24px;
+                font-weight:bold;
+                background:gray;
+
+            }
+            td, th
+            {
+                padding:5px;
+            }
+
+            div.shown{display:block;}
+            div.hidden{display:none;}
+        </style>
+    </head>
+    <body>
+        <form id="DeliverForm">
+            <br /><br />
+            <table>
+                <tr><th class="major" colspan="6">Pick Up - <small><small>click for map</small></small></th></tr>
+                <tr><th>Choice</th><th>Street Address</th><th>City, State</th><th>Zip Code</th><th>Phone</th><th>Lat,Long</th></tr>
+                <tr id="tr0" name="tabrow" class="plain" onclick="select(2,'tr0');"><td><input id=2 type="radio" name="locationId" value=2 /></td><td>1168 Emerald Bay Road</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 544-1919</td><td>38.908007,-120.001418</td></tr>
+                <tr id="tr1" name="tabrow" class="plain" onclick="select(35,'tr1');"><td><input id=35 type="radio" name="locationId" value=35 /></td><td>1062 Emerald Bay Road</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 544-5500</td><td>38.912682,-120.004385</td></tr>
+                <tr id="tr2" name="tabrow" class="plain" onclick="select(1,'tr2');"><td><input id=1 type="radio" name="locationId" value=1 /></td><td>1034 Al Tahoe Boulevard</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 541-0401</td><td>38.934324,-119.974943</td></tr>
+                <tr id="tr3" name="tabrow" class="plain" onclick="select(37,'tr3');"><td><input id=37 type="radio" name="locationId" value=37 /></td><td>3599 Lake Tahoe Boulevard</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 541-7071</td><td>38.948049,-119.95897</td></tr>
+                <tr id="tr4" name="tabrow" class="plain" onclick="select(38,'tr4');"><td><input id=38 type="radio" name="locationId" value=38 /></td><td>209 Kingsbury Grade Road</td><td>Stateline, NV</td><td>89449</td><td>(775) 588-0442</td><td>38.968269,-119.93413</td></tr>
+                <tr><th class="major" colspan="6">Delivery</th></tr>
+                <tr id="tr5" name="tabrow" class="plain" onclick="hideAll(),select(144, 'tr5');"><td><input id=144 type="radio" name="locationId" value=144 /></td><td colspan="5" >Set <b>CORRECT</b> delivery address when checking out with PayPal.</td></tr>
+                <tr id="tr6" name="tabrow" class="plain" onclick="userLocate(),select(145,'tr6');"><td><input id=145 type="radio" name="locationId" value=145 /></td>
+                    <td colspan="5" > Click here to enter a delivery address.
+                        <div id="userDiv" class="shown">
+                            <table>
+                                <tr><td>Street Address</td><td><input type="text" name="streetaddress" id="addressOne" autocomplete="on" /></td></tr>
+                                <tr><td>Apt,Unit,Room #</td><td><input type="text" name="streetaddresstwo" id="addressTwo" autocomplete="on" /></td></tr>
+                                <tr><td>City, State</td><td><input type="text" name="citystate" id="City,State" autocomplete="on" /></td></tr>
+                                <tr><td>Zip Code</td><td><input type="text" name="zipcode" autocomplete="on" /></td></tr>
+                                <tr><td>Latitude</td><td><input type="text" name="latitude" id="Latitude" autocomplete="on"  /></td></tr>
+                                <tr><td>Longitude</td><td><input type="text" name="longitude" id="Longitude" autocomplete="on" /></td></tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <div id="mapDiv" class="hidden">
+            </div>
+        </form>
+    </body>
+</html>
