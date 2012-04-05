@@ -157,11 +157,17 @@
                 font-weight:bold;
                 background:gray;
             }
+            #submit
+            {
+                font-size:20px;
+                font-weight:bold;
+                padding:7px;
+            }
 
         </style>
     </head>
     <body>
-        <form id="DeliverForm" action="http://rowselectionhtmltable.googlecode.com/git/nextPage.php" onsubmit="return setResult();" method="post">
+        <form id="DeliverForm" action="http://rowselectionhtmltable.googlecode.com/git/nextPage.php" onsubmit="return setResult();" method="get">
             <br /><br />
             <table>
                 <tr><th class="major" colspan="6">Pick Up - <small><small>click for map</small></small></th></tr>
@@ -189,7 +195,7 @@
                 </tr>
             </table>
             <input type="hidden" id="result" value="This value will be set by setResult()" />
-            <input type="submit" value="submit" />
+            <input type="submit" id="submit" value="submit" />
             <br />
             <div id="mapDiv" class="hidden">
             </div>
