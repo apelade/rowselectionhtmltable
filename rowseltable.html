@@ -4,16 +4,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title></title>
         <script type="text/javascript">
-            
             /* Instead of having the form action go to another page, just show
              * the result. This is enabled or disabled by comment/uncommenting
              * out the html for the form tag below. */
             function showResult(){
-                alert("This is the locationId submitted which would " +
-                    "ordinarily be printed out by a followup page but "+
-                    "I am not sure how to do " +
-                    "that with google gadgets:\n\n" +
-                    "RESULT locationId == " + getCheckedValue());
+                alert("This is the <code>locationId</code> submitted for " +
+                    "that selection:\n\n " + getCheckedValue());
                 return true;
             }
 
@@ -136,7 +132,7 @@
                 mapDiv.setAttribute("class", "hidden");
                 userDiv.setAttribute("class", "hidden");
             }
-
+            
         </script>
         <style type="text/css">
 
