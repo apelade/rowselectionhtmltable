@@ -1,0 +1,21 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    </head>
+    <body>
+        <script>
+            // search.substring[1] == everything after first ?
+            var params = window.location.search.substring(1);
+            // replace ampersands with html line breaks
+            params = params.replace(/&/g, '<br />');
+            document.write(params);
+        </script>
+    </body>
+</html>
