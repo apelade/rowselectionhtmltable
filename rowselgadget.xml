@@ -1,5 +1,5 @@
-<!-- This is the google gadget that is only used to embed rowseltable.html on the project home page. -->
 <?xml version="1.0" encoding="UTF-8" ?> 
+<!-- This is the google gadget that is only used to embed rowseltable.html on the project home page. -->
 <Module>
   <ModulePrefs title="remote content example" />
   <Content type="url" href="http://rowselectionhtmltable.googlecode.com/git/rowseltable.html" />
