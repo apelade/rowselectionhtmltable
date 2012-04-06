@@ -1,6 +1,5 @@
 <!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
+Not used. php file that was used to print the request details on rowseltable.html form action.
 -->
 <!DOCTYPE html>
 <html>
