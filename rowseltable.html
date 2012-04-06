@@ -6,7 +6,8 @@
         <script type="text/javascript">
             
             /* Instead of having the form action go to another page, just show
-             * the result. */
+             * the result. This is enabled or disabled by comment/uncommenting
+             * out the html for the form tag below. */
             function showResult(){
                 alert("This is the locationId submitted which would " +
                     "ordinarily be printed out by a followup page but "+
@@ -19,13 +20,14 @@
             /* Called from submit button onsubmit action to hidden field val */
             function setResult(){
                 var check = getCheckedValue();
-                if(check == "145" && ! validateAddress()){
+                if(check == "userEntry" && ! validateAddress()){
                     return false;
                 }
                 if(check == 'unchecked'){
                     alert("A Pickup or Delivery location must be chosen.");
                     return false;
                 }else{
+                    /* inject value into field */
                     document.getElementById("result").value = check;
                     return true;
                 }
@@ -52,15 +54,16 @@
                     }
                 }
                 if(accumStr == '' ){
-                    alert("Delivery Address Validator: \nAt least one of the fields needs some text.");
+                    alert("Delivery Address Validator:\n At least one of the fields needs some text.");
+                    showUserDiv();
+                    document.getElementById("addressOne").focus();
                     return false;
                 }else{
                     return true;
                 }
             }
 
-            
-            /* Called by input tr onclick actions to select rows */
+            /* Called by input tr html tag onclick actions to select rows */
             var lastRadio = 'uninit';
             var lastId = 'uninit';
             function select(radioNum, trId){
@@ -76,7 +79,7 @@
                 }
             }
             
-            /* Called by select to switch out the map and other display area*/
+            /* Called by select() to switch out the map and user display areas*/
             function updateDiv(locId){
                 // @ todo: use the js v3 geocoding pan to recenter on diff coords, not reload a different map
                 var iframe2  = '<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps/ms?msa=0&amp;msid=205147199833643296243.0004bcded293416715bcc&amp;hl=en&amp;ie=UTF8&amp;t=m&amp;iwloc=0004bcdf4e039324ecd08&amp;ll=38.938138,-119.969258&amp;spn=0.060262,0.070255&amp;output=embed"></iframe><br />';
@@ -106,8 +109,9 @@
                         mapDiv.innerHTML = iframe38;
                         showMapDiv();
                         break;
-                    default:// ignore unknown ids like the "Delivery" buttons
+                    default:// other radio ids like 'paypal' and 'userEntry'
                         hideAll();
+                        // after this hideAll(), userEntry calls showUserDiv()
                         break;
                 }
             }
@@ -117,21 +121,24 @@
                 userDiv.setAttribute("class","hidden");
                 mapDiv.setAttribute("class", "shown");
             }
+            
             /* Switch to the userDiv, hide the mapDiv */
             function showUserDiv(){
-                userDiv.setAttribute("class","shown");
-                mapDiv.setAttribute("class", "hidden");
+                if(userDiv.getAttribute("class") == "hidden"){
+                    userDiv.setAttribute("class","shown");
+                    mapDiv.setAttribute("class", "hidden");
+                    document.getElementById("addressOne").focus();
+                }
             }
+            
             /* Hide the userDiv and mapDiv */
             function hideAll(){
                 mapDiv.setAttribute("class", "hidden");
                 userDiv.setAttribute("class", "hidden");
             }
-            
 
         </script>
         <style type="text/css">
-
 
             /* The selected and plain classes are switched out in select() */
             tr.selected {background:#9999FF;}
@@ -176,8 +183,9 @@
         </style>
     </head>
     <body> 
-<!--        Note action has been removed from the form, instead it is sent to showResult(). Uncomment this line an comment out the one below to change that. -->
-<!--        <form id="DeliverForm" action="nextPage.php" onsubmit="return setResult();" method="get">-->
+        <!--        <form id="DeliverForm" action="printGetParamsJS.html" onsubmit="return setResult();" method="get"> -->
+        <!--        With action removed from the form, instead it is sent to showResult() to pop an alert. -->
+        <!--        Uncomment this line and comment out the one above to change that. -->
         <form id="DeliverForm" onsubmit="return setResult() && showResult();">
             <br /><br />
             <table>
@@ -189,10 +197,10 @@
                 <tr id="tr3" class="plain" onclick="select(37,'tr3');"><td><input id=37 type="radio" name="locationId" value=37 /></td><td>3599 Lake Tahoe Boulevard</td><td>South Lake Tahoe, CA</td><td>96150</td><td>(530) 541-7071</td><td>38.948049,-119.95897</td></tr>
                 <tr id="tr4" class="plain" onclick="select(38,'tr4');"><td><input id=38 type="radio" name="locationId" value=38 /></td><td>209 Kingsbury Grade Road</td><td>Stateline, NV</td><td>89449</td><td>(775) 588-0442</td><td>38.968269,-119.93413</td></tr>
                 <tr><th class="major" colspan="6">Delivery</th></tr>
-                <tr id="tr5" class="plain" onclick="select(144, 'tr5');"><td><input id=144 type="radio" name="locationId" value=144 /></td><td colspan="5" >Set <b>CORRECT</b> delivery address when checking out with PayPal.</td></tr>
-                <tr id="tr6" class="plain" onclick="select(145,'tr6'),showUserDiv();"><td><input id=145 type="radio" name="locationId" value=145 /></td>
+                <tr id="tr5" class="plain" onclick="select('paypal', 'tr5');"><td><input id='paypal' type="radio" name="locationId" value='paypal' /></td><td colspan="5" >Set <b>CORRECT</b> delivery address when checking out with PayPal.</td></tr>
+                <tr id="tr6" class="plain" onclick="select('userEntry','tr6'),showUserDiv();"><td><input id='userEntry' type="radio" name="locationId" value='userEntry' /></td>
                     <td colspan="5" > Click here to enter a delivery address.
-                        <div id="userDiv" class="shown">
+                        <div id="userDiv" class="hidden">
                             <table>
                                 <tr><td>Street Address</td><td><input type="text" name="streetaddress" id="addressOne" autocomplete="on" /></td></tr>
                                 <tr><td>Apt,Unit,Room #</td><td><input type="text" name="streetaddresstwo" id="addressTwo" autocomplete="on" /></td></tr>
